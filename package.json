@@ -1,0 +1,11 @@
+{
+  "name": "Infra_Repo",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "https://github.com/DanielR9808/Infra_Repo.git",
+  "author": "DanielR9808 <danielroba@unisabana.edu.co>",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.17.1"
+  }
+}
