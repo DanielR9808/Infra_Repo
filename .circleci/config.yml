@@ -1,8 +1,18 @@
-version: 2.1
-  jobs:
+version: 2
+jobs:
     build:
       docker: 
-        - image: circleci/node:4.8.2 # the primary container, where your job's commands are run
+        - image: circleci/node:7.10 # the primary container, where your job's commands are run
+      
+      workiworking_directory: ~/repo
       steps:
         - checkout # check out the code in the project directory
-        - run: echo "hello world" # run the `echo` command
+        - restore_cache:
+            keys:
+              - v1-dependencies-{{ checksum "package.json" }}
+              - v1-dependencies  
+        - run: yarn install
+        - save_cache:
+            paths:
+              - node_modules
+            key: v1-dependencies-{{ checksum "package.json" }}
