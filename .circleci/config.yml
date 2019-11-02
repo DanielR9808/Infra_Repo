@@ -26,7 +26,10 @@ jobs:
           command: sudo pip install awscli
       - run:
           name: Deploy to S3
-          command: scp index.html ec2-user@ec2-52-87-245-167.compute-1.amazonaws.com 
+          command: |
+            scp -i "Key.pem" index.html ubuntu@ec2-34-226-246-33.compute-1.amazonaws.com
+            ssh -i "Key.pem" ubuntu@ec2-34-226-246-33.compute-1.amazonaws.com ls
+
 workflows:
   version: 2
   build-deploy:
