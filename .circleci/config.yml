@@ -26,7 +26,7 @@ jobs:
           command: sudo pip install awscli
       - run:
           name: Deploy to S3
-          command: aws s3 sync jekyll/_site/docs s3://circle-production-static-site/docs/ --delete
+          command: scp index.html ec2-user@ec2-52-87-245-167.compute-1.amazonaws.com 
 workflows:
   version: 2
   build-deploy:
