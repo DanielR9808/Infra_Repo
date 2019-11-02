@@ -1,40 +1,40 @@
 version: 2
 jobs:
-    build:
-      docker: 
-        - image: circleci/node:7.10 # the primary container, where your job's commands are run
-      
-      workiworking_directory: ~/repo
-      steps:
-        - checkout # check out the code in the project directory
-        - restore_cache:
-            keys:
-              - v1-dependencies-{{ checksum "package.json" }}
-              - v1-dependencies  
-        - run: yarn install
-        - save_cache:
-            paths:
-              - node_modules
-            key: v1-dependencies-{{ checksum "package.json" }}
-    deploy:
-      docker:
-        - image: circleci/python:3.7-stretch
-      working_directory: ~/circleci-docs
-      steps:
-        - run:
-            name: Install awscli
-            command: sudo pip install awscli
-        - run:
-            name: Deploy to S3
-            command: aws s3 sync jekyll/_site/docs s3://circle-production-static-site/docs/ --delete
-  workflows:
-    version: 2
-    build-deploy:
-      jobs:
-        - build
-        - deploy:
-            requires:
-              - build
-            filters:
-              branches:
-                only: master
+  build:
+    docker: 
+      - image: circleci/node:7.10 # the primary container, where your job's commands are run
+    
+    workiworking_directory: ~/repo
+    steps:
+      - checkout # check out the code in the project directory
+      - restore_cache:
+          keys:
+            - v1-dependencies-{{ checksum "package.json" }}
+            - v1-dependencies  
+      - run: yarn install
+      - save_cache:
+          paths:
+            - node_modules
+          key: v1-dependencies-{{ checksum "package.json" }}
+  deploy:
+    docker:
+      - image: circleci/python:3.7-stretch
+    working_directory: ~/circleci-docs
+    steps:
+      - run:
+          name: Install awscli
+          command: sudo pip install awscli
+      - run:
+          name: Deploy to S3
+          command: aws s3 sync jekyll/_site/docs s3://circle-production-static-site/docs/ --delete
+workflows:
+  version: 2
+  build-deploy:
+    jobs:
+      - build
+      - deploy:
+          requires:
+            - build
+          filters:
+            branches:
+              only: master
