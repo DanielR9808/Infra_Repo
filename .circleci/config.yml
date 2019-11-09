@@ -12,14 +12,7 @@ jobs:
             - v1-dependencies-{{ checksum "package.json" }}
             - v1-dependencies  
       - run: yarn install
-      - run:
-          name: Deploy to S3
-          command: |
-            pwd 
-            ls
-            chmod 400 ./Key.pem
-            scp -i "./Key.pem" ./index.html ubuntu@ec2-34-226-246-33.compute-1.amazonaws.com:/var/www
-            ssh -i "./Key.pem" ubuntu@ec2-34-226-246-33.compute-1.amazonaws.com ls "/var/www"
+      
 
       - save_cache:
           paths:
@@ -27,20 +20,20 @@ jobs:
           key: v1-dependencies-{{ checksum "package.json" }}
   deploy:
     docker:
-      - image: circleci/python:3.7-stretch
-    working_directory: ~/circleci-docs
+      - image: circleci/openjdk
     steps:
-      - run:
-          name: Install awscli
-          command: sudo pip install awscli
-      - run:
-          name: Deploy to S3
+       - add_ssh_keys:
+          fingerprints:
+            - "87:ba:54:2b:83:c2:d6:0d:4c:01:23:09:8d:cc:2a:95"
+       - checkout
+       - run:
+          name: "Ejecucion" 
           command: |
+            echo "A first hello"
+            ls --all
             pwd 
-            ls
-            chmod 400 ./Key.pem
-            scp -i "./Key.pem" ./index.html ubuntu@ec2-34-226-246-33.compute-1.amazonaws.com:/var/www
-            ssh -i "./Key.pem" ubuntu@ec2-34-226-246-33.compute-1.amazonaws.com ls "/var/www"
+            echo "Finished"              
+            scp -o StrictHostKeyChecking=no ./index.html ubuntu@ec2-34-229-250-66.compute-1.amazonaws.com:/var/www/html
 
 workflows:
   version: 2
