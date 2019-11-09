@@ -29,7 +29,7 @@ jobs:
        - run:
           name: "Ejecucion" 
           command: |
-            echo "A first hello"
+            
             ls --all
             pwd 
             echo "Finished"              
