@@ -1,12 +1,12 @@
 version: 2
-Jobs:
+
+jobs:
   build:
     docker:
       - image: circleci/node:12.9.1-browsers
   
     working_directory: ~/repo
 steps:
-      - checkout 
       - restore_cache:
         keys:
           - v1-dependencies-{{ checksum "package.json" }}
