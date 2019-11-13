@@ -4,7 +4,7 @@ jobs:
     docker:
       - image: circleci/node:12.9.1-browsers
   
-    working_directory: ~/repo/redux-basics
+    working_directory: ~/repo
 
     steps:
       - checkout
@@ -22,7 +22,7 @@ jobs:
             - node_modules
           key: v1-dependencies-{{ checksum "package.json" }}
     
-      - run: yarn -v
+      - run: yarn lint
           
 
  
