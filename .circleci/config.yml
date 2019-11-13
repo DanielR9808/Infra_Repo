@@ -21,29 +21,30 @@ jobs:
       
       - run: yarn test
 
-deploy:
-  docker:
-    - image: circleci/openjdk
-  steps:
+  deploy:
+    docker:
+      - image: circleci/openjdk
+    steps:
       - add_ssh_keys:
-        fingerprints:
-          - "3a:bd:11:22:61:e3:f3:c5:03:62:62:ff:1b:26:73:6c"
-      - checkout
+          fingerprints:
+            - "3a:bd:11:22:61:e3:f3:c5:03:62:62:ff:1b:26:73:6c"
+            - checkout
       - run:
-        name: "Ejecucion" 
-        command: | 
-          ls --all
-          pwd 
-                     
-          scp -o StrictHostKeyChecking=no ./index.html ubuntu@ec2-3-227-89-116.compute-1.amazonaws.com:/var/www/html
+          name: "Ejecucion" 
+          command: | 
+            ls --all
+            pwd 
+                      
+            scp -o StrictHostKeyChecking=no ./index.html ubuntu@ec2-3-227-89-116.compute-1.amazonaws.com:/var/www/html
 
 workflows:
-  version: 2
-  build-yarn: 
+  version: 2  
+  build_and_test:
     jobs:
+      - build-yarn
       - deploy:
           requires:
             - build-yarn
           filters:
             branches:
-              only: master
+            only: master
