@@ -1,39 +1,41 @@
-version: 2
-jobs:
+version: 2.1
+Jobs:
   build:
-    docker: 
-      - image: circleci/node:7.10 # the primary container, where your job's commands are run
-    
-    workiworking_directory: ~/repo
-    steps:
-      - checkout # check out the code in the project directory
-      - restore_cache:
-          keys:
-            - v1-dependencies-{{ checksum "package.json" }}
-            - v1-dependencies  
-      - run: yarn install
-      
-
-      - save_cache:
-          paths:
-            - node_modules
-          key: v1-dependencies-{{ checksum "package.json" }}
-  deploy:
     docker:
-      - image: circleci/openjdk
-    steps:
-       - add_ssh_keys:
-          fingerprints:
-            - "3a:bd:11:22:61:e3:f3:c5:03:62:62:ff:1b:26:73:6c"
-       - checkout
-       - run:
-          name: "Ejecucion" 
-          command: |
-            
-            ls --all
-            pwd 
+      - image: circleci/node:12.9.1-browsers
+  
+    working_directory: ~/repo
+steps:
+      - checkout 
+      - restore_cache:
+        keys:
+          - v1-dependencies-{{ checksum "package.json" }}
+          - v1-dependencies-
+      
+      - run: yarn install
+   
+      - save_cache:
+        paths:
+          - node_modules
+        key: v1-dependencies-{{ checksum "package.json" }}
+    
+      - run: yarn test
+
+deploy:
+  docker:
+    - image: circleci/openjdk
+  steps:
+      - add_ssh_keys:
+        fingerprints:
+          - "3a:bd:11:22:61:e3:f3:c5:03:62:62:ff:1b:26:73:6c"
+      - checkout
+      - run:
+        name: "Ejecucion" 
+        command: | 
+          ls --all
+          pwd 
                      
-            scp -o StrictHostKeyChecking=no ./index.html ubuntu@ec2-3-227-89-116.compute-1.amazonaws.com:/var/www/html
+          scp -o StrictHostKeyChecking=no ./index.html ubuntu@ec2-3-227-89-116.compute-1.amazonaws.com:/var/www/html
 
 workflows:
   version: 2
