@@ -1,7 +1,7 @@
 version: 2.1
 
 jobs:
-  build-yarn:
+  build:
     docker:
       - image: circleci/node:12.9.1-browsers
   
@@ -41,10 +41,9 @@ workflows:
   version: 2  
   build_and_test:
     jobs:
-      - build-yarn
+      - build
       - deploy:
           requires:
             - build-yarn
           filters:
-            branches:
             only: master
