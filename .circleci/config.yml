@@ -5,6 +5,7 @@ jobs:
       - image: circleci/node:12.9.1-browsers
   
     working_directory: ~/repo/redux-basics
+
     steps:
       - checkout
       
@@ -14,6 +15,7 @@ jobs:
             - v1-dependencies-
       
       - run: yarn install
+      - run: yarn install test
    
       - save_cache:
           paths:
