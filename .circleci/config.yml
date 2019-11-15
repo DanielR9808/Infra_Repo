@@ -76,7 +76,7 @@ jobs:
             - "3a:bd:11:22:61:e3:f3:c5:03:62:62:ff:1b:26:73:6c"
       - run: yarn run build
       
-      - run: scp -o StrictHostKeyChecking=no -r ./build/* ubuntu@ec2-34-236-249-218.compute-1.amazonaws.com:/var/www/html -v
+      - run: scp -o StrictHostKeyChecking=no -r ./build/* ubuntu@ec2-34-236-249-218.compute-1.amazonaws.com:/var/www/html 
   
 
       - save_cache:
