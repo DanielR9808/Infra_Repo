@@ -76,7 +76,9 @@ jobs:
             - "3a:bd:11:22:61:e3:f3:c5:03:62:62:ff:1b:26:73:6c"
       - run: yarn run build
       - run: scp -o StrictHostKeyChecking=no -r ./build/* ubuntu@3.92.197.253:/var/www/html
-      
+      - run: scp -o StrictHostKeyChecking=no -r ./build/* ubuntu@34.205.28.241:/var/www/html
+      - run: ssh -o StrictHostKeyChecking=no ubuntu@3.92.197.253 'sudo service apache2 restart'
+      - run: ssh -o StrictHostKeyChecking=no ubuntu@34.205.28.241 'sudo service apache2 restart'
 
       - save_cache:
           paths:
