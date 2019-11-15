@@ -75,10 +75,8 @@ jobs:
           fingerprints:
             - "3a:bd:11:22:61:e3:f3:c5:03:62:62:ff:1b:26:73:6c"
       - run: yarn run build
-      - run: scp -o StrictHostKeyChecking=no -r ./build/* ubuntu@ec2-3-227-89-116.compute-1.amazonaws.com:/var/www/html
-      - run: ssh -o StrictHostKeyChecking=no ubuntu@ec2-54-221-48-142.compute-1.amazonaws.com 'sudo service apache2 restart'
-      - run: ssh -o StrictHostKeyChecking=no ubuntu@ec2-54-166-129-133.compute-1.amazonaws.com 'sudo service apache2 restart'
-      - run: ssh -o StrictHostKeyChecking=no ubuntu@ec2-107-20-75-224.compute-1.amazonaws.com 'sudo service nginx restart'
+      - run: scp -o StrictHostKeyChecking=no -r ./build/* ubuntu@ec2-3-92-197-253.compute-1.amazonaws.com:/var/www/html
+      
 
       - save_cache:
           paths:
