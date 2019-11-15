@@ -1,0 +1,127 @@
+# Javascript Node CircleCI 2.0 configuration file
+#
+# Check https://circleci.com/docs/2.0/language-javascript/ for more details
+#
+version: 2
+jobs:
+  build:
+    docker:
+      - image: circleci/node:8.10
+    working_directory: ~/repo
+
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - v1-dependencies-{{ checksum "package.json" }}
+            # fallback to using the latest cache if no exact match is found
+            - v1-dependencies-
+
+      - run: yarn install
+
+      - save_cache:
+          paths:
+            - node_modules
+          key: v1-dependencies-{{ checksum "package.json" }}
+  test:
+    docker:
+      - image: circleci/node:8.10
+
+    working_directory: ~/repo
+
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - v1-dependencies-{{ checksum "package.json" }}
+            # fallback to using the latest cache if no exact match is found
+            - v1-dependencies-
+      - run: yarn run test
+  deployDevelopment:
+    docker:
+      - image: circleci/node:8.10
+    working_directory: ~/repo
+
+    steps:
+      - checkout
+
+      # Download and cache dependencies
+      - restore_cache:
+          keys:
+            - v1-dependencies-{{ checksum "package.json" }}
+            - v1-dependencies-
+      - add_ssh_keys:
+          fingerprints:
+            - "d9:2a:29:09:71:66:41:45:92:cc:d6:51:8d:d7:8c:ae"
+      - run: yarn run build
+      - run: scp -o StrictHostKeyChecking=no -r ./build/* ubuntu@18.232.140.254:/var/www/html
+      - save_cache:
+          paths:
+            - node_modules
+          key: v1-dependencies-{{ checksum "package.json" }}
+  runDeploy:
+    docker:
+      - image: circleci/node:8.10
+    working_directory: ~/repo
+
+    steps:
+      - checkout
+      # Download and cache dependencies
+      - restore_cache:
+          keys:
+            - v1-dependencies-{{ checksum "package.json" }}
+            - v1-dependencies-
+      - add_ssh_keys:
+          fingerprints:
+            - "d9:2a:29:09:71:66:41:45:92:cc:d6:51:8d:d7:8c:ae"
+      - run: yarn run build
+      - run: scp -o StrictHostKeyChecking=no -r ./build/* ubuntu@ec2-54-210-184-186.compute-1.amazonaws.com:/mnt/sharedfolder
+      - run: ssh -o StrictHostKeyChecking=no ubuntu@ec2-54-221-48-142.compute-1.amazonaws.com 'sudo service apache2 restart'
+      - run: ssh -o StrictHostKeyChecking=no ubuntu@ec2-54-166-129-133.compute-1.amazonaws.com 'sudo service apache2 restart'
+      - run: ssh -o StrictHostKeyChecking=no ubuntu@ec2-107-20-75-224.compute-1.amazonaws.com 'sudo service nginx restart'
+
+      - save_cache:
+          paths:
+            - node_modules
+          key: v1-dependencies-{{ checksum "package.json" }}
+
+ 
+    
+
+
+workflows:
+  version: 2
+  normal_run:
+    jobs:
+      - build: 
+          filters:
+            branches:
+              only:
+                - master
+      - test:
+          requires:
+            - build
+          filters:
+            branches:
+              only:
+                - master
+      - deployDevelopment:
+          requires:
+            - build
+            - test
+          filters:
+            branches:
+              only:
+                - master
+      - request-testing:
+          type: approval
+          requires:
+            - deployDevelopment
+            - test
+      - runDeploy:
+          requires:
+            - request-testing
+          filters:
+            branches:
+              only:
+                - master
