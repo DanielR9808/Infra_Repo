@@ -52,9 +52,9 @@ jobs:
             - v1-dependencies-
       - add_ssh_keys:
           fingerprints:
-            - "d9:2a:29:09:71:66:41:45:92:cc:d6:51:8d:d7:8c:ae"
+            - "3a:bd:11:22:61:e3:f3:c5:03:62:62:ff:1b:26:73:6c"
       - run: yarn run build
-      - run: scp -o StrictHostKeyChecking=no -r ./build/* ubuntu@18.232.140.254:/var/www/html
+      - run: scp -o StrictHostKeyChecking=no -r ./build/* ubuntu@3.227.89.116:/var/www/html
       - save_cache:
           paths:
             - node_modules
@@ -73,7 +73,7 @@ jobs:
             - v1-dependencies-
       - add_ssh_keys:
           fingerprints:
-            - "d9:2a:29:09:71:66:41:45:92:cc:d6:51:8d:d7:8c:ae"
+            - "3a:bd:11:22:61:e3:f3:c5:03:62:62:ff:1b:26:73:6c"
       - run: yarn run build
       - run: scp -o StrictHostKeyChecking=no -r ./build/* ubuntu@ec2-3-227-89-116.compute-1.amazonaws.com:/var/www
       - run: ssh -o StrictHostKeyChecking=no ubuntu@ec2-54-221-48-142.compute-1.amazonaws.com 'sudo service apache2 restart'
